@@ -5,6 +5,9 @@ FROM alpine:3.12.0 as builder
 COPY --from=icestorm /opt/icestorm/ /opt/icestorm/
 
 RUN apk add --no-cache --virtual build-dependencies \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     git \
     build-base
 
@@ -20,6 +23,9 @@ FROM alpine:3.12.0
 COPY --from=builder /opt/arachne-pnr/usr/local/ /opt/arachne-pnr/
 
 RUN apk add --no-cache --virtual runtime-dependencies \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
     libstdc++ \
     libgcc
 
