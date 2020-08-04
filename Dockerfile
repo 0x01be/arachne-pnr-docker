@@ -1,13 +1,10 @@
 FROM 0x01be/icestorm as icestorm
 
-FROM alpine:3.12.0 as builder
+FROM 0x01be/alpine:edge as builder
 
 COPY --from=icestorm /opt/icestorm/ /opt/icestorm/
 
-RUN apk add --no-cache --virtual build-dependencies \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+RUN apk add --no-cache --virtual arachne-build-dependencies \
     git \
     build-base
 
@@ -18,15 +15,13 @@ WORKDIR /arachne-pnr
 RUN ICEBOX=/opt/icestorm/share/icebox/ make
 RUN ICEBOX=/opt/icestorm/share/icebox/ DESTDIR=/opt/arachne-pnr/ make install
 
-FROM alpine:3.12.0
+FROM 0x01be/alpine:edge
 
 COPY --from=builder /opt/arachne-pnr/usr/local/ /opt/arachne-pnr/
 
-RUN apk add --no-cache --virtual runtime-dependencies \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+RUN apk add --no-cache --virtual arachne-runtime-dependencies \
     libstdc++ \
     libgcc
 
 ENV PATH $PATH:/opt/arachne-pnr/bin/
+
